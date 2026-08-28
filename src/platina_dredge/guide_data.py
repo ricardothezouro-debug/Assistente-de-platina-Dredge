@@ -21,7 +21,7 @@ ACCENT = "#73AAA5"  # verde-água da identidade do guia original
 HERO_IMAGE = "https://cdn.akamai.steamstatic.com/steam/apps/1562430/header.jpg"
 
 # Parágrafo de abertura do guia original.
-INTRO = "A ideia desta versão é simples: se o guia mandar buscar algo, ele também diz onde está, como chegar, qual equipamento usar, a hora correta e onde entregar. Nome em português fica em destaque; o nome inglês aparece apenas como referência quando ajuda."
+INTRO = "São 40 troféus e um save só: os dois finais cabem na mesma partida. O que mais encurta a run é fechar Mestre Pescador e Atraindo Anomalias antes de instalar qualquer DLC — depois disso o que sobra é limpeza dirigida. Os nomes estão em português, com o inglês ao lado quando a tradução atrapalha."
 
 # Números de destaque exibidos no topo.
 HERO_STATS = [
