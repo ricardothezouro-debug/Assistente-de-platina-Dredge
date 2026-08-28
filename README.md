@@ -82,13 +82,13 @@ Também disponível no arquivo [`platinas-entry.json`](platinas-entry.json):
   "description": "Guia PT-BR completo: rota de 90 passos, 67 peixes, localizador de itens, santuários, docas e os 40 troféus.",
   "repo": "ricardothezouro-debug/Assistente-de-platina-Dredge",
   "ref": "main",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "src_subdir": "src",
   "module": "platina_dredge.module",
   "accent": "#73AAA5",
   "icon": "src/platina_dredge/assets/brand/icon.png",
   "min_sidekick_version": "0.6.0",
-  "changelog": "Primeira versão: as 10 abas do guia PT-BR completo, com imagens e progresso exportável."
+  "changelog": "Abertura do guia reescrita: agora começa pelo que define o tamanho da run — um save para os dois finais e fechar Mestre Pescador e Atraindo Anomalias antes de instalar qualquer DLC."
 }
 ```
 
