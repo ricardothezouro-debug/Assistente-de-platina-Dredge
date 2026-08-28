@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+
+# O ícone do card é versionado de propósito (§5 do PLUGIN_STANDARD).
+!src/platina_dredge/assets/brand/icon.png
