@@ -2,18 +2,13 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
-from . import guide_data
+from .paths import guide_dir
 
 
 def _data_dir() -> Path:
-    base = os.getenv("APPDATA")
-    root = Path(base) / "StreamerSidekick" if base else Path.home() / ".streamer_sidekick"
-    path = root / "platinas" / guide_data.GUIDE_ID
-    path.mkdir(parents=True, exist_ok=True)
-    return path
+    return guide_dir()
 
 
 def load_progress() -> set[str]:

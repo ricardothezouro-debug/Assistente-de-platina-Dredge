@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import hashlib
-import os
 from pathlib import Path
 from typing import Callable
 from urllib import parse, request
@@ -10,13 +9,11 @@ from urllib import parse, request
 from PySide6.QtCore import QObject, QThread, Signal
 from PySide6.QtGui import QPixmap
 
-from . import guide_data
+from .paths import guide_dir, urlopen
 
 
 def _cache_dir() -> Path:
-    base = os.getenv("APPDATA")
-    root = Path(base) / "StreamerSidekick" if base else Path.home() / ".streamer_sidekick"
-    path = root / "platinas" / guide_data.GUIDE_ID / "img_cache"
+    path = guide_dir() / "img_cache"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -67,7 +64,7 @@ class _DownloadWorker(QThread):
     def run(self) -> None:
         try:
             req = request.Request(self._url, headers=_headers(self._url))
-            with request.urlopen(req, timeout=20) as response:
+            with urlopen(req, timeout=20) as response:
                 data = response.read()
             self._dest.write_bytes(data)
             self.done.emit(str(self._dest))

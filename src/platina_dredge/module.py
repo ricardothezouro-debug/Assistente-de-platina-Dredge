@@ -38,6 +38,8 @@ def module_info():
 
 
 def help_text() -> str:
+
+    from .paths import guide_dir_label
     return (
         "Guia de platina completo de DREDGE em PT-BR, dividido em 10 abas.\n\n"
         "Como usar:\n"
@@ -54,7 +56,7 @@ def help_text() -> str:
         "• As abas Santuários, Docas, Missões, Pesquisa, Mapas e Fontes completam o "
         "restante do checklist.\n\n"
         "O progresso é salvo automaticamente em "
-        "%APPDATA%/StreamerSidekick/platinas/dredge/ e sobrevive a atualizações. "
+        f"{guide_dir_label()} e sobrevive a atualizações. "
         "Use Exportar/Importar para levar o progresso para outro PC.\n\n"
         "Atenção às DLCs: libere Mestre Pescador e Atraindo Anomalias antes de "
         "instalar Pale Reach ou Iron Rig, senão as espécies das expansões entram no "
