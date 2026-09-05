@@ -8,7 +8,7 @@ Este é o ÚNICO arquivo específico do jogo — os demais módulos são genéri
 """
 
 # Identificador único do guia (kebab-case): vira o id do plugin e a pasta
-# de progresso em %APPDATA%/StreamerSidekick/platinas/<id>/.
+# de progresso na pasta de dados do Sidekick (ver paths.py), em platinas/<id>/.
 GUIDE_ID = "dredge"
 
 GAME_NAME = "DREDGE — Platina Definitiva"
@@ -2631,5 +2631,5 @@ SOURCES = [
 ]
 
 # Rodapé do guia.
-FOOTER = "DREDGE Platina Definitiva PT-BR • guia não oficial • progresso salvo em %APPDATA%/StreamerSidekick/platinas/dredge/"
+FOOTER = "DREDGE Platina Definitiva PT-BR • guia não oficial • progresso salvo fora da pasta do plugin"
 
