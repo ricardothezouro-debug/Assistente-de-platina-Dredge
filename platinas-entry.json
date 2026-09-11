@@ -4,7 +4,7 @@
   "description": "Guia PT-BR completo: rota de 90 passos, 67 peixes, localizador de itens, santuários, docas e os 40 troféus.",
   "repo": "ricardothezouro-debug/Assistente-de-platina-Dredge",
   "ref": "main",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "src_subdir": "src",
   "module": "platina_dredge.module",
   "accent": "#73AAA5",
