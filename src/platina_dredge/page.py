@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
 from . import guide_data
 from . import progress as keys
 from .image_loader import ImageLoader
-from .storage import load_progress, save_progress
+from .storage import load_progress, load_ui, save_progress, save_ui
 
 _IMG_MAX_W = 620
 _IMG_MAX_H = 420
@@ -159,9 +159,7 @@ class GuidePage(QWidget):
         outer.setContentsMargins(0, 0, 22, 0)
         outer.setSpacing(12)
         self._build_header(outer)
-        self._build_search(outer)
         self._build_progress(outer)
-        self._build_toolbar(outer)
         self._build_nav(outer)
 
         self.stack = QStackedWidget()
@@ -202,14 +200,50 @@ class GuidePage(QWidget):
 
     # ------------------------------------------------------------------ topo
     def _build_header(self, outer: QVBoxLayout) -> None:
-        outer.addWidget(_label(guide_data.GAME_NAME, "PageTitle", wrap=False))
-        outer.addWidget(_label(guide_data.INTRO, "Muted"))
+        """Título sempre visível; o resto do cabeçalho (abertura, números, busca
+        e botões de progresso) recolhe num clique — e o app lembra a escolha.
+        Com o jogo aberto, o que importa é a lista; o cabeçalho só ocupa tela."""
+        title_row = QHBoxLayout()
+        title_row.setSpacing(8)
+        title_row.addWidget(_label(guide_data.GAME_NAME, "PageTitle", wrap=False), 1)
+        self._header_toggle = QPushButton()
+        self._header_toggle.setToolTip(
+            "Recolher ou mostrar a abertura, os números, a busca e os botões")
+        self._header_toggle.clicked.connect(self._toggle_header)
+        title_row.addWidget(self._header_toggle, 0, Qt.AlignmentFlag.AlignVCenter)
+        outer.addLayout(title_row)
+
+        self._header_box = QWidget()
+        box = QVBoxLayout(self._header_box)
+        box.setContentsMargins(0, 0, 0, 0)
+        box.setSpacing(12)
+        box.addWidget(_label(guide_data.INTRO, "Muted"))
         stats = QHBoxLayout()
         stats.setSpacing(8)
         for stat in guide_data.HERO_STATS:
             stats.addWidget(_pill(f"{stat['value']}  {stat['label']}"))
         stats.addStretch(1)
-        outer.addLayout(stats)
+        box.addLayout(stats)
+        self._build_search(box)
+        self._build_toolbar(box)
+        outer.addWidget(self._header_box)
+        self._set_header_collapsed(bool(load_ui().get("header_collapsed", False)))
+
+    def _set_header_collapsed(self, collapsed: bool) -> None:
+        # Estado guardado num atributo, não lido de isVisible(): antes de a
+        # janela aparecer, isVisible() é False mesmo com o widget "mostrado".
+        self._header_collapsed = collapsed
+        self._header_box.setVisible(not collapsed)
+        self._header_toggle.setText(
+            "▼  Mostrar cabeçalho" if collapsed else "▲  Recolher cabeçalho")
+
+    def _toggle_header(self) -> None:
+        collapsed = not self._header_collapsed
+        self._set_header_collapsed(collapsed)
+        ui = load_ui()
+        ui["header_collapsed"] = collapsed
+        save_ui(ui)
+
 
     def _build_search(self, outer: QVBoxLayout) -> None:
         row = QHBoxLayout()
