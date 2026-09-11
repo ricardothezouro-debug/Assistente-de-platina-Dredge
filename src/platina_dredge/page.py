@@ -19,6 +19,7 @@ from . import guide_data
 from . import progress as keys
 from .image_loader import ImageLoader
 from .storage import load_progress, load_ui, save_progress, save_ui
+from .topbar import TopBar
 
 _IMG_MAX_W = 620
 _IMG_MAX_H = 420
@@ -161,6 +162,11 @@ class GuidePage(QWidget):
         self._build_header(outer)
         self._build_progress(outer)
         self._build_nav(outer)
+        self.top = TopBar(
+            self, title=self._title_box, header=self._header_box,
+            progress=self._progress_box, nav=self._nav_box, bar=self.progress,
+            pills=self._progress_pills, load_ui=load_ui, save_ui=save_ui)
+        outer.addWidget(self.top.rule)
 
         self.stack = QStackedWidget()
         self._holders: list[QVBoxLayout] = []
@@ -200,18 +206,14 @@ class GuidePage(QWidget):
 
     # ------------------------------------------------------------------ topo
     def _build_header(self, outer: QVBoxLayout) -> None:
-        """Título sempre visível; o resto do cabeçalho (abertura, números, busca
-        e botões de progresso) recolhe num clique — e o app lembra a escolha.
-        Com o jogo aberto, o que importa é a lista; o cabeçalho só ocupa tela."""
-        title_row = QHBoxLayout()
-        title_row.setSpacing(8)
+        """O topo tem três níveis (ver topbar.py). Aqui só se montam as peças:
+        o título, e o bloco que some primeiro — abertura, números, busca e
+        botões de progresso."""
+        self._title_box = QWidget()
+        title_row = QHBoxLayout(self._title_box)
+        title_row.setContentsMargins(0, 0, 0, 0)
         title_row.addWidget(_label(guide_data.GAME_NAME, "PageTitle", wrap=False), 1)
-        self._header_toggle = QPushButton()
-        self._header_toggle.setToolTip(
-            "Recolher ou mostrar a abertura, os números, a busca e os botões")
-        self._header_toggle.clicked.connect(self._toggle_header)
-        title_row.addWidget(self._header_toggle, 0, Qt.AlignmentFlag.AlignVCenter)
-        outer.addLayout(title_row)
+        outer.addWidget(self._title_box)
 
         self._header_box = QWidget()
         box = QVBoxLayout(self._header_box)
@@ -227,23 +229,6 @@ class GuidePage(QWidget):
         self._build_search(box)
         self._build_toolbar(box)
         outer.addWidget(self._header_box)
-        self._set_header_collapsed(bool(load_ui().get("header_collapsed", False)))
-
-    def _set_header_collapsed(self, collapsed: bool) -> None:
-        # Estado guardado num atributo, não lido de isVisible(): antes de a
-        # janela aparecer, isVisible() é False mesmo com o widget "mostrado".
-        self._header_collapsed = collapsed
-        self._header_box.setVisible(not collapsed)
-        self._header_toggle.setText(
-            "▼  Mostrar cabeçalho" if collapsed else "▲  Recolher cabeçalho")
-
-    def _toggle_header(self) -> None:
-        collapsed = not self._header_collapsed
-        self._set_header_collapsed(collapsed)
-        ui = load_ui()
-        ui["header_collapsed"] = collapsed
-        save_ui(ui)
-
 
     def _build_search(self, outer: QVBoxLayout) -> None:
         row = QHBoxLayout()
@@ -267,7 +252,9 @@ class GuidePage(QWidget):
         outer.addWidget(self.results_box)
 
     def _build_progress(self, outer: QVBoxLayout) -> None:
-        row = QHBoxLayout()
+        self._progress_box = QWidget()
+        row = QHBoxLayout(self._progress_box)
+        row.setContentsMargins(0, 0, 0, 0)
         row.setSpacing(8)
         self.progress = QProgressBar()
         self.progress.setStyleSheet(_PROGRESS_QSS)
@@ -277,7 +264,8 @@ class GuidePage(QWidget):
         row.addWidget(self.progress, 1)
         row.addWidget(self.progress_label, 0)
         row.addWidget(self.trophy_label, 0)
-        outer.addLayout(row)
+        self._progress_pills = [self.progress_label, self.trophy_label]
+        outer.addWidget(self._progress_box)
 
     def _build_toolbar(self, outer: QVBoxLayout) -> None:
         row = QHBoxLayout()
@@ -310,6 +298,7 @@ class GuidePage(QWidget):
             self._nav_buttons.append(button)
         for column in range(5):
             grid.setColumnStretch(column, 1)
+        self._nav_box = holder
         outer.addWidget(holder)
 
     def show_section(self, index: int) -> None:
@@ -350,6 +339,8 @@ class GuidePage(QWidget):
         for pill, phase_keys in self._phase_pills:
             phase_done = sum(1 for key in phase_keys if key in self._done)
             pill.setText(f"{phase_done}/{len(phase_keys)}")
+        if hasattr(self, "top"):
+            self.top.sync()
 
     def _refresh_boxes(self) -> None:
         for key, boxes in self._boxes.items():
